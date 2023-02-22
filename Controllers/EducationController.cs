@@ -39,7 +39,7 @@ namespace MVC75NET.Controllers
                 Text = u.Name
             });
                 
-                ViewBag.UniversityId = universities;
+            ViewBag.UniversityId = universities;
             return View();
         }
         public IActionResult Edit(int id)
