@@ -12,11 +12,13 @@ namespace MVC75NET.Controllers
     {
         private readonly MyContext context;
         private readonly EducationRepository eduRepository;
+        private readonly UniversityRepository universityRepository;
 
-        public EducationController(MyContext context, EducationRepository eduRepository)
+        public EducationController(MyContext context, EducationRepository eduRepository, UniversityRepository universityRepository)
         {
             this.context = context;
             this.eduRepository = eduRepository;
+            this.universityRepository = universityRepository;
         }
 
         public IActionResult Index() //melakukan penjoinan pada tabel education dan
@@ -32,19 +34,18 @@ namespace MVC75NET.Controllers
         }
         public IActionResult Create()
         {
-            var universities = context.Universities.ToList()
-            .Select(u => new SelectListItem
+            var universities = universityRepository.GetAll()
+            .Select(u => new SelectListItem //buat menampilkan nama dari univ nya saja
             {
                 Value = u.Id.ToString(),
                 Text = u.Name
             });
-                
             ViewBag.UniversityId = universities;
             return View();
         }
         public IActionResult Edit(int id)
         {
-            var universities = context.Universities.ToList()
+            var universities = universityRepository.GetAll()
             .Select(u => new SelectListItem
             {
                 Value = u.Id.ToString(),
@@ -52,7 +53,7 @@ namespace MVC75NET.Controllers
             });
             ViewBag.UniversityId = universities;
 
-            var educations = context.Educations.Find(id);
+            var educations = eduRepository.GetById(id);
             return View(new EducationUnivVM
             {
                 Id = educations.Id,
@@ -80,14 +81,14 @@ namespace MVC75NET.Controllers
         public IActionResult Create(EducationUnivVM education) // Melakukan Mapping ulang agar data yang dimasukanke dalam 
                                                            // database merupakan data original table university 
         {
-            context.Add(new Education{
+            var result = eduRepository.Insert(
+                new Education{
                 Id = education.Id,
                 Degree = education.Degree,
                 Gpa = education.Gpa,
                 Major = education.Major, 
                 UniversityId = Convert.ToInt16(education.UniversityName)
             });
-            var result = context.SaveChanges();
             if (result > 0)
                 return RedirectToAction(nameof(Index));
             return View();
@@ -97,16 +98,15 @@ namespace MVC75NET.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(EducationUnivVM education)
         {
-            context.Entry(new Education
+            var result = eduRepository.Update(new Education
             {
                 Id = education.Id,
                 Degree = education.Degree,
                 Gpa = education.Gpa,
                 Major = education.Major,
                 UniversityId =Convert.ToInt32(education.UniversityName)
-            }).State = EntityState.Modified; 
-           
-            var result = context.SaveChanges();
+            }); 
+
             if (result > 0)
             {
                 return RedirectToAction(nameof(Index));

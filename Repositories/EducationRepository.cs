@@ -1,4 +1,6 @@
-﻿using MVC75NET.Contexts;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using MVC75NET.Contexts;
 using MVC75NET.Models;
 using MVC75NET.Repositories.Interface;
 using MVC75NET.ViewModels;
@@ -34,12 +36,18 @@ namespace MVC75NET.Repositories
 
         public int Insert(Education entity)
         {
-            throw new NotImplementedException();
+            int result = 0;
+            context.Add(entity);
+            result = context.SaveChanges();
+            return result;
         }
 
         public int Update(Education entity)
         {
-            throw new NotImplementedException();
+            int result = 0;
+            context.Entry(entity).State = EntityState.Modified;
+            result = context.SaveChanges();
+            return result;
         }
 
         public List<EducationUnivVM> GetEducationUniversities()
