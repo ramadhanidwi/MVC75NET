@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MVC75NET.Contexts;
 using MVC75NET.Models;
+using MVC75NET.Repositories;
 using MVC75NET.ViewModels;
 
 namespace MVC75NET.Controllers
@@ -10,14 +11,17 @@ namespace MVC75NET.Controllers
     public class EmployeeController : Controller
     {
         private readonly MyContext context;
-        public EmployeeController(MyContext context)
+        private readonly EmployeeRepository empRepository;
+
+        public EmployeeController(MyContext context, EmployeeRepository empRepository)
         {
             this.context = context;
+            this.empRepository = empRepository;
         }
 
         public IActionResult Index()
         {
-            var tampil = context.Employees.ToList()
+            var tampil = empRepository.GetAll()
                 .Select(e => new EmployeeVM
                 {
                     NIK = e.NIK,
@@ -34,7 +38,7 @@ namespace MVC75NET.Controllers
 
         public IActionResult Details(string id)
         {
-            var employees = context.Employees.Find(id);
+            var employees = empRepository.GetById(id);
             return View(new EmployeeVM
             {
                 NIK = employees.NIK,
@@ -49,14 +53,12 @@ namespace MVC75NET.Controllers
         }
         public IActionResult Create()
         {
-            //var employees = context.Employees.ToList();
-
-            //ViewBag.Employees = employees;
             return View();
         }
+
         public IActionResult Edit(string id)
         {
-            var employees = context.Employees.Find(id);
+            var employees = empRepository.GetById(id);
             return View(new EmployeeVM
             {
                 NIK = employees.NIK,
@@ -71,7 +73,7 @@ namespace MVC75NET.Controllers
         }
         public IActionResult Delete(string id)
         {
-            var employees = context.Employees.Find(id);
+            var employees = empRepository.GetById(id);
             return View(new EmployeeVM
             {
                 NIK = employees.NIK,
@@ -89,7 +91,7 @@ namespace MVC75NET.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(EmployeeVM employee)
         {
-            context.Add(new Employee
+            var result = empRepository.Insert(new Employee
             {
                 NIK = employee.NIK,
                 FirstName = employee.FirstName,
@@ -100,7 +102,6 @@ namespace MVC75NET.Controllers
                 Email = employee.Email,
                 PhoneNumber = employee.PhoneNumber
             });
-            var result = context.SaveChanges();
             if (result > 0)
                 return RedirectToAction(nameof(Index));
             return View();
@@ -110,18 +111,17 @@ namespace MVC75NET.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(EmployeeVM employee)
         {
-            context.Entry(new Employee
+            var result = empRepository.Update(new Employee
             {
                 NIK = employee.NIK,
-                FirstName = employee.FirstName, 
+                FirstName = employee.FirstName,
                 LastName = employee.LastName,
                 BirthDate = employee.BirthDate,
                 Gender = (Models.GenderEnum)employee.Gender,
                 HiringDate = employee.HiringDate,
                 Email = employee.Email,
                 PhoneNumber = employee.PhoneNumber
-            }).State = EntityState.Modified;
-            var result = context.SaveChanges();
+            });
             if (result > 0)
             {
                 return RedirectToAction(nameof(Index));
@@ -132,9 +132,7 @@ namespace MVC75NET.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Remove(string NIK)
         {
-            var employee = context.Employees.Find(NIK);
-            context.Remove(employee);
-            var result = context.SaveChanges();
+            var result = empRepository.Delete(NIK);
             if (result > 0)
             {
                 return RedirectToAction(nameof(Index));

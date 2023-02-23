@@ -20,7 +20,16 @@ namespace MVC75NET.Repositories
 
         public int Delete(int key)
         {
-            throw new NotImplementedException();
+            int result = 0;
+            var education= GetById(key);
+            if (education == null)
+            {
+                return result;
+            }
+            context.Remove(education);
+            result = context.SaveChanges();
+
+            return result;
         }
 
         public List<Education> GetAll()

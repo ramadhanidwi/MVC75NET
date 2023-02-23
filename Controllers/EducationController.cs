@@ -118,9 +118,7 @@ namespace MVC75NET.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Remove(int id)
         {
-            var education = context.Educations.Find(id);
-            context.Remove(education);
-            var result = context.SaveChanges();
+            var result = eduRepository.Delete(id);
             if (result > 0)
             {
                 return RedirectToAction(nameof(Index));

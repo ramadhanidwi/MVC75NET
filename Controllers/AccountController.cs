@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using MVC75NET.Contexts;
 using MVC75NET.Models;
+using MVC75NET.Repositories;
 using MVC75NET.ViewModels;
 
 namespace MVC75NET.Controllers
@@ -11,34 +12,37 @@ namespace MVC75NET.Controllers
     public class AccountController : Controller
     {
         private readonly MyContext context;
-        public AccountController(MyContext context)
+        private readonly AccountRepository accRepository;
+
+        public AccountController(MyContext context, AccountRepository accRepository)
         {
             this.context = context;
+            this.accRepository = accRepository;
         }
 
         public IActionResult Index()
         {
-            var accounts = context.Accounts.ToList();
+            var accounts = accRepository.GetAll();
             return View(accounts);
         }
 
-        public IActionResult Details(int id)
+        public IActionResult Details(string id)
         {
-            var accounts = context.Accounts.Find(id);
+            var accounts = accRepository.GetById(id);
             return View(accounts);
         }
         public IActionResult Create()
         {
             return View();
         }
-        public IActionResult Edit(int id)
+        public IActionResult Edit(string id)
         {
-            var accounts = context.Accounts.Find(id);
+            var accounts = accRepository.GetById(id);
             return View(accounts);
         }
-        public IActionResult Delete(int id)
+        public IActionResult Delete(string id)
         {
-            var accounts = context.Accounts.Find(id);
+            var accounts = accRepository.GetById(id);
             return View(accounts);
         }
 
@@ -46,8 +50,7 @@ namespace MVC75NET.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Account account)
         {
-            context.Add(account);
-            var result = context.SaveChanges();
+            var result = accRepository.Insert(account);
             if (result > 0)
                 return RedirectToAction(nameof(Index));
             return View();
@@ -57,8 +60,7 @@ namespace MVC75NET.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Account account)
         {
-            context.Entry(account).State = EntityState.Modified;
-            var result = context.SaveChanges();
+            var result = accRepository.Update(account);
             if (result > 0)
             {
                 return RedirectToAction(nameof(Index));
@@ -67,11 +69,9 @@ namespace MVC75NET.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Remove(int id)
+        public IActionResult Remove(string id)
         {
-            var account = context.Accounts.Find(id);
-            context.Remove(account);
-            var result = context.SaveChanges();
+            var result = accRepository.Delete(id);
             if (result > 0)
             {
                 return RedirectToAction(nameof(Index));
