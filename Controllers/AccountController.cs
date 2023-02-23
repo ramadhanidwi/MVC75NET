@@ -6,6 +6,7 @@ using MVC75NET.Contexts;
 using MVC75NET.Models;
 using MVC75NET.Repositories;
 using MVC75NET.ViewModels;
+using NuGet.Protocol.Core.Types;
 
 namespace MVC75NET.Controllers
 {
@@ -131,10 +132,21 @@ namespace MVC75NET.Controllers
         {
             if (accRepository.Login(loginVM)) //Secara default if akan membandingkan nilai dengan true 
             {
+                var userdata = accRepository.GetUserData(loginVM.Email);
+                const string email = "email";
+                const string fullname = "fullname";
+                const string role = "role";
+
+                HttpContext.Session.SetString(email, userdata.Email);
+                HttpContext.Session.SetString(fullname, userdata.FullName);
+                HttpContext.Session.SetString(role, userdata.Role);
+
+
                 return RedirectToAction("Index", "Home");
             }
             ModelState.AddModelError(string.Empty, "Account or Password Not Found!");
             return View();
         }
+
     }
 }

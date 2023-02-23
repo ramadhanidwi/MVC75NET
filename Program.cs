@@ -11,11 +11,19 @@ builder.Services.AddControllersWithViews();
 var connectionString = builder.Configuration.GetConnectionString("connection"); //untuk mendapat connection string yang ada di appsettings.json 
 builder.Services.AddDbContext<MyContext>( options => options.UseSqlServer(connectionString)); //untuk mendaftarkan MyContext.cs ke Sql Server 
 
+// Configure Session
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromSeconds(10);
+});
+
 //Dependency Injction 
 builder.Services.AddScoped<UniversityRepository>();
 builder.Services.AddScoped<EducationRepository>();
 builder.Services.AddScoped<EmployeeRepository>();
 builder.Services.AddScoped<AccountRepository>();
+
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 var app = builder.Build();
 
@@ -33,6 +41,8 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
