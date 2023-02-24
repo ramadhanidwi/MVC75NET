@@ -24,16 +24,40 @@ namespace MVC75NET.Controllers
         public IActionResult Index() //melakukan penjoinan pada tabel education dan
                                      //university menggunakan join method syntax 
         {
+            if (HttpContext.Session.GetString("email") == null)
+            {
+                return RedirectToAction("Unauthorized", "Error");
+            }
+            if (HttpContext.Session.GetString("role") != "Admin" && HttpContext.Session.GetString("role") != "User")
+            {
+                return RedirectToAction("Forbidden", "Error"); //RedirectToAction(Method,Controler)
+            }
             var results = eduRepository.GetEducationUniversities();
             return View(results);
         }
 
         public IActionResult Details(int id)
         {
+            if (HttpContext.Session.GetString("email") == null)
+            {
+                return RedirectToAction("Unauthorized", "Error");
+            }
+            if (HttpContext.Session.GetString("role") != "Admin" && HttpContext.Session.GetString("role") != "User")
+            {
+                return RedirectToAction("Forbidden", "Error"); //RedirectToAction(Method,Controler)
+            }
             return View(eduRepository.GetEduUnivById(id));
         }
         public IActionResult Create()
         {
+            if (HttpContext.Session.GetString("email") == null)
+            {
+                return RedirectToAction("Unauthorized", "Error");
+            }
+            if (HttpContext.Session.GetString("role") != "Admin")
+            {
+                return RedirectToAction("Forbidden", "Error"); //RedirectToAction(Method,Controler)
+            }
             var universities = universityRepository.GetAll()
             .Select(u => new SelectListItem //buat menampilkan nama dari univ nya saja
             {
@@ -45,6 +69,14 @@ namespace MVC75NET.Controllers
         }
         public IActionResult Edit(int id)
         {
+            if (HttpContext.Session.GetString("email") == null)
+            {
+                return RedirectToAction("Unauthorized", "Error");
+            }
+            if (HttpContext.Session.GetString("role") != "Admin")
+            {
+                return RedirectToAction("Forbidden", "Error"); //RedirectToAction(Method,Controler)
+            }
             var universities = universityRepository.GetAll()
             .Select(u => new SelectListItem
             {
@@ -65,6 +97,14 @@ namespace MVC75NET.Controllers
         }
         public IActionResult Delete(int id)
         {
+            if (HttpContext.Session.GetString("email") == null)
+            {
+                return RedirectToAction("Unauthorized", "Error");
+            }
+            if (HttpContext.Session.GetString("role") != "Admin")
+            {
+                return RedirectToAction("Forbidden", "Error"); //RedirectToAction(Method,Controler)
+            }
             var educations = context.Educations.Find(id);
             return View(new EducationUnivVM
             {
@@ -81,6 +121,14 @@ namespace MVC75NET.Controllers
         public IActionResult Create(EducationUnivVM education) // Melakukan Mapping ulang agar data yang dimasukanke dalam 
                                                            // database merupakan data original table university 
         {
+            if (HttpContext.Session.GetString("email") == null)
+            {
+                return RedirectToAction("Unauthorized", "Error");
+            }
+            if (HttpContext.Session.GetString("role") != "Admin")
+            {
+                return RedirectToAction("Forbidden", "Error"); //RedirectToAction(Method,Controler)
+            }
             var result = eduRepository.Insert(
                 new Education{
                 Id = education.Id,
@@ -98,6 +146,14 @@ namespace MVC75NET.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(EducationUnivVM education)
         {
+            if (HttpContext.Session.GetString("email") == null)
+            {
+                return RedirectToAction("Unauthorized", "Error");
+            }
+            if (HttpContext.Session.GetString("role") != "Admin")
+            {
+                return RedirectToAction("Forbidden", "Error"); //RedirectToAction(Method,Controler)
+            }
             var result = eduRepository.Update(new Education
             {
                 Id = education.Id,
@@ -118,6 +174,14 @@ namespace MVC75NET.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Remove(int id)
         {
+            if (HttpContext.Session.GetString("email") == null)
+            {
+                return RedirectToAction("Unauthorized", "Error");
+            }
+            if (HttpContext.Session.GetString("role") != "Admin")
+            {
+                return RedirectToAction("Forbidden", "Error"); //RedirectToAction(Method,Controler)
+            }
             var result = eduRepository.Delete(id);
             if (result > 0)
             {
