@@ -20,6 +20,14 @@ namespace MVC75NET.Controllers
 
         public IActionResult Index()
         {
+            if (HttpContext.Session.GetString("email") == null)
+            {
+                return RedirectToAction("Unauthorized", "Error");
+            }
+            if (HttpContext.Session.GetString("role") != "Admin")
+            {
+                return RedirectToAction("Forbidden", "Error"); //RedirectToAction(Method,Controler)
+            }
             var universities = repository.GetAll();
             return View(universities);
         }
