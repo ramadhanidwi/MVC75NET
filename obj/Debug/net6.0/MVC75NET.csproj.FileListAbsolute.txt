@@ -288,3 +288,4 @@ D:\KERJA\MCC\Pemrograman\Segmen 2\day 1\MVC75NET\MVC75NET\bin\Debug\net6.0\runti
 D:\KERJA\MCC\Pemrograman\Segmen 2\day 1\MVC75NET\MVC75NET\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 D:\KERJA\MCC\Pemrograman\Segmen 2\day 1\MVC75NET\MVC75NET\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
 D:\KERJA\MCC\Pemrograman\Segmen 2\day 1\MVC75NET\MVC75NET\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\KERJA\MCC\Pemrograman\Segmen 2\day 1\MVC75NET\MVC75NET\bin\Debug\net6.0\BCrypt.Net-Next.dll

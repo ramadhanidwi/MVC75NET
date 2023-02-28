@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MVC75NET.Contexts;
+using MVC75NET.Handler;
 using MVC75NET.Models;
 using MVC75NET.Repositories.Interface;
 using MVC75NET.ViewModels;
@@ -66,9 +67,13 @@ public class AccountRepository : iRepository<string, Account>
             {
                 Email = e.Email,
                 Password = a.Password
-            });
+            }).FirstOrDefault(a => a.Email == loginVM.Email);
 
-        return getAccounts.Any(e => e.Email == loginVM.Email && e.Password == loginVM.Password);
+        if(getAccounts is null)
+        {
+            return false;
+        }
+        return Hashing.ValidatePassword(loginVM.Password, getAccounts.Password);
     }
 
     public int Register(RegisterVM registerVM)
@@ -119,7 +124,7 @@ public class AccountRepository : iRepository<string, Account>
         Account account = new Account
         {
             EmployeeNIK = registerVM.NIK,
-            Password = registerVM.Password
+            Password = Hashing.HashPassword(registerVM.Password)
         };
         context.Accounts.Add(account);
         result = context.SaveChanges();

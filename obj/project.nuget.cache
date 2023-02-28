@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "btZhWVTtLIwil2usB1TsiI5POYGb9m8L3pwsBdle+lFsZrT7cszmMmBL9fa5gd0VQw97JPL/zuM0WdC2Oub1YA==",
+  "dgSpecHash": "8W56u1s4Bo9l5BWA1UJJIYnMupP5qP0LelrrrFomH/nwwrURiI9Z+4mxGe6uMnr6TO8wnXVkY4ANTZuxkfaBtA==",
   "success": true,
   "projectFilePath": "D:\\KERJA\\MCC\\Pemrograman\\Segmen 2\\day 1\\MVC75NET\\MVC75NET\\MVC75NET.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\LENOVO\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\LENOVO\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
+    "C:\\Users\\LENOVO\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\LENOVO\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\LENOVO\\.nuget\\packages\\messagepack\\2.1.152\\messagepack.2.1.152.nupkg.sha512",
     "C:\\Users\\LENOVO\\.nuget\\packages\\messagepack.annotations\\2.1.152\\messagepack.annotations.2.1.152.nupkg.sha512",
