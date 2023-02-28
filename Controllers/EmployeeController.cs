@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MVC75NET.Contexts;
@@ -8,6 +9,7 @@ using MVC75NET.ViewModels;
 
 namespace MVC75NET.Controllers
 {
+    [Authorize(Roles ="Admin")]
     public class EmployeeController : Controller
     {
         private readonly MyContext context;
@@ -21,14 +23,6 @@ namespace MVC75NET.Controllers
 
         public IActionResult Index()
         {
-            if (HttpContext.Session.GetString("email") == null)
-            {
-                return RedirectToAction("Unauthorized", "Error");
-            }
-            if (HttpContext.Session.GetString("role") != "Admin")
-            {
-                return RedirectToAction("Forbidden", "Error"); //RedirectToAction(Method,Controler)
-            }
             var tampil = empRepository.GetAll()
                 .Select(e => new EmployeeVM
                 {
@@ -46,14 +40,6 @@ namespace MVC75NET.Controllers
 
         public IActionResult Details(string id)
         {
-            if (HttpContext.Session.GetString("email") == null)
-            {
-                return RedirectToAction("Unauthorized", "Error");
-            }
-            if (HttpContext.Session.GetString("role") != "Admin")
-            {
-                return RedirectToAction("Forbidden", "Error"); //RedirectToAction(Method,Controler)
-            }
             var employees = empRepository.GetById(id);
             return View(new EmployeeVM
             {
@@ -69,27 +55,11 @@ namespace MVC75NET.Controllers
         }
         public IActionResult Create()
         {
-            if (HttpContext.Session.GetString("email") == null)
-            {
-                return RedirectToAction("Unauthorized", "Error");
-            }
-            if (HttpContext.Session.GetString("role") != "Admin")
-            {
-                return RedirectToAction("Forbidden", "Error"); //RedirectToAction(Method,Controler)
-            }
             return View();
         }
 
         public IActionResult Edit(string id)
         {
-            if (HttpContext.Session.GetString("email") == null)
-            {
-                return RedirectToAction("Unauthorized", "Error");
-            }
-            if (HttpContext.Session.GetString("role") != "Admin")
-            {
-                return RedirectToAction("Forbidden", "Error"); //RedirectToAction(Method,Controler)
-            }
             var employees = empRepository.GetById(id);
             return View(new EmployeeVM
             {
@@ -105,14 +75,6 @@ namespace MVC75NET.Controllers
         }
         public IActionResult Delete(string id)
         {
-            if (HttpContext.Session.GetString("email") == null)
-            {
-                return RedirectToAction("Unauthorized", "Error");
-            }
-            if (HttpContext.Session.GetString("role") != "Admin")
-            {
-                return RedirectToAction("Forbidden", "Error"); //RedirectToAction(Method,Controler)
-            }
             var employees = empRepository.GetById(id);
             return View(new EmployeeVM
             {
@@ -131,14 +93,6 @@ namespace MVC75NET.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(EmployeeVM employee)
         {
-            if (HttpContext.Session.GetString("email") == null)
-            {
-                return RedirectToAction("Unauthorized", "Error");
-            }
-            if (HttpContext.Session.GetString("role") != "Admin")
-            {
-                return RedirectToAction("Forbidden", "Error"); //RedirectToAction(Method,Controler)
-            }
             var result = empRepository.Insert(new Employee
             {
                 NIK = employee.NIK,
@@ -159,14 +113,6 @@ namespace MVC75NET.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(EmployeeVM employee)
         {
-            if (HttpContext.Session.GetString("email") == null)
-            {
-                return RedirectToAction("Unauthorized", "Error");
-            }
-            if (HttpContext.Session.GetString("role") != "Admin")
-            {
-                return RedirectToAction("Forbidden", "Error"); //RedirectToAction(Method,Controler)
-            }
             var result = empRepository.Update(new Employee
             {
                 NIK = employee.NIK,
@@ -188,14 +134,6 @@ namespace MVC75NET.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Remove(string NIK)
         {
-            if (HttpContext.Session.GetString("email") == null)
-            {
-                return RedirectToAction("Unauthorized", "Error");
-            }
-            if (HttpContext.Session.GetString("role") != "Admin")
-            {
-                return RedirectToAction("Forbidden", "Error"); //RedirectToAction(Method,Controler)
-            }
             var result = empRepository.Delete(NIK);
             if (result > 0)
             {

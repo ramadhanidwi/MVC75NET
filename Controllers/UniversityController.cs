@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MVC75NET.Contexts;
 using MVC75NET.Models;
@@ -18,40 +19,41 @@ namespace MVC75NET.Controllers
             this.repository = repository;
         }
 
+        [Authorize(Roles ="Admin,User")]
         public IActionResult Index()
         {
-            if (HttpContext.Session.GetString("email") == null)
-            {
-                return RedirectToAction("Unauthorized", "Error");
-            }
-            if (HttpContext.Session.GetString("role") != "Admin")
-            {
-                return RedirectToAction("Forbidden", "Error"); //RedirectToAction(Method,Controler)
-            }
             var universities = repository.GetAll();
             return View(universities);
         }
 
+        [Authorize(Roles = "Admin,User")]
         public IActionResult Details(int id)
         {
             var university = repository.GetById(id);
             return View(university);
         }
+
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
         }
+
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(int id)
         {
             var university = repository.GetById(id);
             return View(university);
         }
+
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {
             var university = repository.GetById(id);
             return View(university);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(University university)
@@ -62,6 +64,7 @@ namespace MVC75NET.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(University university)
@@ -73,6 +76,8 @@ namespace MVC75NET.Controllers
             }
             return View();
         }
+
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Remove(int id)

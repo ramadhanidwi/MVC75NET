@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "WVrR5Ywt9Kq4e2M8dMa3tT+gwWnIIzb0Ps2lLYYDfei+vdZO4oct/HqGwHyvXPra+1F7welkpHrKe8lL9P7TsA==",
+  "dgSpecHash": "btZhWVTtLIwil2usB1TsiI5POYGb9m8L3pwsBdle+lFsZrT7cszmMmBL9fa5gd0VQw97JPL/zuM0WdC2Oub1YA==",
   "success": true,
   "projectFilePath": "D:\\KERJA\\MCC\\Pemrograman\\Segmen 2\\day 1\\MVC75NET\\MVC75NET\\MVC75NET.csproj",
   "expectedPackageFiles": [
@@ -10,6 +10,7 @@
     "C:\\Users\\LENOVO\\.nuget\\packages\\messagepack\\2.1.152\\messagepack.2.1.152.nupkg.sha512",
     "C:\\Users\\LENOVO\\.nuget\\packages\\messagepack.annotations\\2.1.152\\messagepack.annotations.2.1.152.nupkg.sha512",
     "C:\\Users\\LENOVO\\.nuget\\packages\\messagepackanalyzer\\2.1.152\\messagepackanalyzer.2.1.152.nupkg.sha512",
+    "C:\\Users\\LENOVO\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\6.0.14\\microsoft.aspnetcore.authentication.jwtbearer.6.0.14.nupkg.sha512",
     "C:\\Users\\LENOVO\\.nuget\\packages\\microsoft.aspnetcore.razor.language\\6.0.0\\microsoft.aspnetcore.razor.language.6.0.0.nupkg.sha512",
     "C:\\Users\\LENOVO\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\5.0.0\\microsoft.bcl.asyncinterfaces.5.0.0.nupkg.sha512",
     "C:\\Users\\LENOVO\\.nuget\\packages\\microsoft.build\\17.3.2\\microsoft.build.17.3.2.nupkg.sha512",

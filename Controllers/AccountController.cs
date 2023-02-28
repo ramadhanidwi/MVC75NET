@@ -2,11 +2,16 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using MVC75NET.Contexts;
 using MVC75NET.Models;
 using MVC75NET.Repositories;
+using MVC75NET.Repositories.Interface;
 using MVC75NET.ViewModels;
 using NuGet.Protocol.Core.Types;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace MVC75NET.Controllers
 {
@@ -14,11 +19,13 @@ namespace MVC75NET.Controllers
     {
         private readonly MyContext context;
         private readonly AccountRepository accRepository;
+        private readonly IConfiguration configuration;
 
-        public AccountController(MyContext context, AccountRepository accRepository)
+        public AccountController(MyContext context, AccountRepository accRepository, IConfiguration configuration)
         {
             this.context = context;
             this.accRepository = accRepository;
+            this.configuration = configuration;
         }
 
         public IActionResult Index()
@@ -133,13 +140,44 @@ namespace MVC75NET.Controllers
             if (accRepository.Login(loginVM)) //Secara default if akan membandingkan nilai dengan true 
             {
                 var userdata = accRepository.GetUserData(loginVM.Email);
-                const string email = "email";
-                const string fullname = "fullname";
-                const string role = "role";
+                var roles = accRepository.GetRolesByNIK(loginVM.Email);
 
-                HttpContext.Session.SetString(email, userdata.Email);
-                HttpContext.Session.SetString(fullname, userdata.FullName);
-                HttpContext.Session.SetString(role, userdata.Role);
+                var claims = new List<Claim>()
+                {
+                    new Claim(ClaimTypes.Email, userdata.Email),
+                    new Claim(ClaimTypes.Name, userdata.FullName)
+                };
+
+                foreach (var item in roles)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, item));
+                }
+
+                //konfigurasi token 
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"]));   //mengambil key yang ada di appsettings
+                var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);                //mengkonversi key menggunakan algoritma hsha
+                var token = new JwtSecurityToken(                                                       //mapping data sesuai dengan jwt security token nya 
+                    issuer: configuration["JWT:Issuer"],
+                    audience: configuration["JWT:Audience"],
+                    claims: claims,
+                    expires: DateTime.Now.AddMinutes(10),
+                    signingCredentials: signIn
+                    );
+
+                //Menggenerate pembuatan tokennya 
+                var generateToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+                HttpContext.Session.SetString("jwtoken", generateToken);
+
+
+                //var userdata = accRepository.GetUserData(loginVM.Email);
+                //const string email = "email";
+                //const string fullname = "fullname";
+                //const string role = "role";
+
+                //HttpContext.Session.SetString(email, userdata.Email);
+                //HttpContext.Session.SetString(fullname, userdata.FullName);
+                //HttpContext.Session.SetString(role, userdata.Role);
 
 
                 return RedirectToAction("Index", "Home");

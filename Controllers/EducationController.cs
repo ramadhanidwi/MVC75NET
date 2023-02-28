@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MVC75NET.Contexts;
 using MVC75NET.Models;
 using MVC75NET.Repositories;
 using MVC75NET.ViewModels;
+using System.Data;
 
 namespace MVC75NET.Controllers
 {
@@ -21,43 +23,23 @@ namespace MVC75NET.Controllers
             this.universityRepository = universityRepository;
         }
 
+        [Authorize(Roles = "Admin,User")]
         public IActionResult Index() //melakukan penjoinan pada tabel education dan
                                      //university menggunakan join method syntax 
         {
-            if (HttpContext.Session.GetString("email") == null)
-            {
-                return RedirectToAction("Unauthorized", "Error");
-            }
-            if (HttpContext.Session.GetString("role") != "Admin" && HttpContext.Session.GetString("role") != "User")
-            {
-                return RedirectToAction("Forbidden", "Error"); //RedirectToAction(Method,Controler)
-            }
             var results = eduRepository.GetEducationUniversities();
             return View(results);
         }
 
+        [Authorize(Roles = "Admin,User")]
         public IActionResult Details(int id)
         {
-            if (HttpContext.Session.GetString("email") == null)
-            {
-                return RedirectToAction("Unauthorized", "Error");
-            }
-            if (HttpContext.Session.GetString("role") != "Admin" && HttpContext.Session.GetString("role") != "User")
-            {
-                return RedirectToAction("Forbidden", "Error"); //RedirectToAction(Method,Controler)
-            }
             return View(eduRepository.GetEduUnivById(id));
         }
+
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
-            if (HttpContext.Session.GetString("email") == null)
-            {
-                return RedirectToAction("Unauthorized", "Error");
-            }
-            if (HttpContext.Session.GetString("role") != "Admin")
-            {
-                return RedirectToAction("Forbidden", "Error"); //RedirectToAction(Method,Controler)
-            }
             var universities = universityRepository.GetAll()
             .Select(u => new SelectListItem //buat menampilkan nama dari univ nya saja
             {
@@ -67,16 +49,10 @@ namespace MVC75NET.Controllers
             ViewBag.UniversityId = universities;
             return View();
         }
+
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(int id)
         {
-            if (HttpContext.Session.GetString("email") == null)
-            {
-                return RedirectToAction("Unauthorized", "Error");
-            }
-            if (HttpContext.Session.GetString("role") != "Admin")
-            {
-                return RedirectToAction("Forbidden", "Error"); //RedirectToAction(Method,Controler)
-            }
             var universities = universityRepository.GetAll()
             .Select(u => new SelectListItem
             {
@@ -95,16 +71,10 @@ namespace MVC75NET.Controllers
                 UniversityName = context.Universities.Find(educations.UniversityId).Name
             });
         }
+
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {
-            if (HttpContext.Session.GetString("email") == null)
-            {
-                return RedirectToAction("Unauthorized", "Error");
-            }
-            if (HttpContext.Session.GetString("role") != "Admin")
-            {
-                return RedirectToAction("Forbidden", "Error"); //RedirectToAction(Method,Controler)
-            }
             var educations = context.Educations.Find(id);
             return View(new EducationUnivVM
             {
@@ -116,19 +86,12 @@ namespace MVC75NET.Controllers
             }) ; 
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(EducationUnivVM education) // Melakukan Mapping ulang agar data yang dimasukanke dalam 
                                                            // database merupakan data original table university 
         {
-            if (HttpContext.Session.GetString("email") == null)
-            {
-                return RedirectToAction("Unauthorized", "Error");
-            }
-            if (HttpContext.Session.GetString("role") != "Admin")
-            {
-                return RedirectToAction("Forbidden", "Error"); //RedirectToAction(Method,Controler)
-            }
             var result = eduRepository.Insert(
                 new Education{
                 Id = education.Id,
@@ -142,18 +105,11 @@ namespace MVC75NET.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(EducationUnivVM education)
         {
-            if (HttpContext.Session.GetString("email") == null)
-            {
-                return RedirectToAction("Unauthorized", "Error");
-            }
-            if (HttpContext.Session.GetString("role") != "Admin")
-            {
-                return RedirectToAction("Forbidden", "Error"); //RedirectToAction(Method,Controler)
-            }
             var result = eduRepository.Update(new Education
             {
                 Id = education.Id,
@@ -170,18 +126,11 @@ namespace MVC75NET.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Remove(int id)
         {
-            if (HttpContext.Session.GetString("email") == null)
-            {
-                return RedirectToAction("Unauthorized", "Error");
-            }
-            if (HttpContext.Session.GetString("role") != "Admin")
-            {
-                return RedirectToAction("Forbidden", "Error"); //RedirectToAction(Method,Controler)
-            }
             var result = eduRepository.Delete(id);
             if (result > 0)
             {
